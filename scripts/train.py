@@ -24,7 +24,6 @@ def train(model,
     for epoch in tqdm(range(n_epochs)):
         model.train()
         for xb, yb in dl_train:
-            # Cast the logits to float64 to avoid underflow.
             loss = loss_fn(model(xb).to(logit_dtype), yb)
             loss.backward()
             optimizer.step()
@@ -75,6 +74,7 @@ else:
     raise ValueError(f"Unknown loss function: {config['loss_function']}")
 
 if config["logit_dtype"] == "float64":
+    # Cast the logits to float64 to avoid underflow.
     logit_dtype = torch.float64
 elif config["logit_dtype"] == "float32":
     logit_dtype = torch.float32
