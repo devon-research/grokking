@@ -21,8 +21,9 @@ def train(model,
     dl_valid = torch.utils.data.DataLoader(ds_valid, batch_size)
     acc = Accelerator()
     model, optimizer, dl_train, dl_valid = acc.prepare(model, optimizer, dl_train, dl_valid)
+    model.train()
+    optimizer.zero_grad()
     for epoch in tqdm(range(n_epochs)):
-        model.train()
         for xb, yb in dl_train:
             loss = loss_fn(model(xb).to(logit_dtype), yb)
             loss.backward()
@@ -34,6 +35,7 @@ def train(model,
             with torch.inference_mode():
                 loss_valid = sum(loss_fn(model(xb), yb) for xb, yb in dl_valid) / len(dl_valid)
             wandb.log({"loss_valid": loss_valid.item()})
+            model.train()
 
 # Read the configuration from the YAML file.
 with open("config.yaml") as f:
