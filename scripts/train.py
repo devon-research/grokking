@@ -32,7 +32,7 @@ def train(model,
             wandb.log({"loss_train": loss.item()})
         if epoch % validate_every == 0:
             model.eval()
-            with torch.no_grad():
+            with torch.inference_mode():
                 loss_valid = sum(loss_fn(model(xb), yb) for xb, yb in dl_valid) / len(dl_valid)
             wandb.log({"loss_valid": loss_valid.item()})
 
