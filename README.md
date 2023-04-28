@@ -20,6 +20,7 @@ conda install pyyaml tqdm
 pip install wandb accelerate
 git clone git@github.com:devonwp/grokking.git
 pip install -e grokking
+wandb offline
 ```
 
 To generate the data and train a model, do:
