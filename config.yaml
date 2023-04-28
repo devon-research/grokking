@@ -2,17 +2,17 @@
 random_seed: 23093
 modular_base: 97
 # Relevant for the data...
-train_fraction: 0.5
+train_fraction: 0.3
 # Relevant for the model...
 model: GromovMLP
 hidden_dim: 512
 # Relevant for the optimization...
 optimizer: Adam
-loss_function: CrossEntropy
+loss_function: MSE
 learning_rate: 0.001
 full_batch: false
-batch_size: 100
-n_epochs: 100
+batch_size: 128
+n_epochs: 15000
 validate_every: 100
 weight_decay: 1.0
 beta_1: 0.9
