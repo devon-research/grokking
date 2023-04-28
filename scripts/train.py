@@ -18,7 +18,7 @@ def train(model,
           validate_every,
           logit_dtype):
     dl_train = torch.utils.data.DataLoader(ds_train, batch_size)
-    dl_valid = torch.utils.data.DataLoader(ds_valid, batch_size)
+    dl_valid = torch.utils.data.DataLoader(ds_valid, batch_size, shuffle=False)
     acc = Accelerator()
     model, optimizer, dl_train, dl_valid = acc.prepare(model, optimizer, dl_train, dl_valid)
     model.train()
