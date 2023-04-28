@@ -29,8 +29,8 @@ dataset_train, dataset_valid = torch.utils.data.random_split(
     dataset, [train_frac, 1 - train_frac])
 
 # Write the data to a file.
-file_location = os.path.dirname(os.path.abspath(__file__))
-data_location = os.path.join(file_location, "..", "data")
-os.makedirs(data_location, exist_ok=True)
+this_directory = os.path.dirname(os.path.abspath(__file__))
+data_directory = os.path.join(this_directory, "..", "data")
+os.makedirs(data_directory, exist_ok=True)
 torch.save([dataset_train, dataset_valid],
-           os.path.join(data_location, f"{P}-{train_frac}-datasets.pt"))
+           os.path.join(data_directory, f"{P}-{train_frac}-datasets.pt"))
