@@ -35,6 +35,10 @@ def train(model,
             with torch.inference_mode():
                 loss_valid = sum(loss_fn(model(xb), yb) for xb, yb in dl_valid) / len(dl_valid)
             wandb.log({"loss_valid": loss_valid.item()})
+            checkpoint_name = f"checkpoint-{epoch}.pt"
+            checkpoint_path = os.path.join(wandb.run.dir, checkpoint_name)
+            torch.save(model.state_dict(), checkpoint_path)
+            wandb.save(checkpoint_path)
             model.train()
 
 # Read the configuration from the YAML file.
