@@ -1,5 +1,6 @@
 import yaml
 import os
+import argparse
 import wandb
 import torch
 from accelerate import Accelerator # easy GPUs
@@ -38,6 +39,12 @@ def train(model,
 # Read the configuration from the YAML file.
 with open("config.yaml") as f:
     config = yaml.safe_load(f)
+
+# Override the configuration with command-line arguments.
+parser = argparse.ArgumentParser()
+for key in config.keys():
+    parser.add_argument("--" + key, default=config[key], type=type(config[key]))
+config = vars(parser.parse_args())
 
 # Load the datasets.
 this_directory = os.path.dirname(os.path.abspath(__file__))
