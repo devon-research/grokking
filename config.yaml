@@ -17,3 +17,4 @@ validate_every: 100
 weight_decay: 1.0
 beta_1: 0.9
 beta_2: 0.98
+logit_dtype: float64

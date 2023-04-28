@@ -14,7 +14,8 @@ def train(model,
           loss_fn,
           batch_size,
           n_epochs,
-          validate_every):
+          validate_every,
+          logit_dtype):
     dl_train = torch.utils.data.DataLoader(ds_train, batch_size)
     dl_valid = torch.utils.data.DataLoader(ds_valid, batch_size)
     acc = Accelerator()
@@ -23,7 +24,7 @@ def train(model,
         model.train()
         for xb, yb in dl_train:
             # Cast the logits to float64 to avoid underflow.
-            loss = loss_fn(model(xb).to(torch.float64), yb)
+            loss = loss_fn(model(xb).to(logit_dtype), yb)
             loss.backward()
             optimizer.step()
             optimizer.zero_grad()
@@ -65,6 +66,13 @@ elif config["loss_function"] == "CrossEntropy":
 else:
     raise ValueError(f"Unknown loss function: {config['loss_function']}")
 
+if config["logit_dtype"] == "float64":
+    logit_dtype = torch.float64
+elif config["logit_dtype"] == "float32":
+    logit_dtype = torch.float32
+else:
+    raise ValueError(f"Unknown logit data type: {config['logit_dtype']}")
+
 if config["full_batch"]:
     config["batch_size"] = len(ds_train)
 
@@ -80,6 +88,7 @@ train(model = model,
       loss_fn = loss_fn,
       batch_size = config["batch_size"],
       n_epochs = config["n_epochs"],
-      validate_every = config["validate_every"])
+      validate_every = config["validate_every"],
+      logit_dtype = logit_dtype)
 
 wandb.finish()
