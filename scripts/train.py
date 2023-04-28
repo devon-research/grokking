@@ -66,8 +66,10 @@ else:
     raise ValueError(f"Unknown optimizer: {config['optimizer']}")
 
 if config["loss_function"] == "MSE":
-    loss_fn = torch.nn.MSELoss()
-    raise NotImplementedError("Need to change the dataloader for this.")
+    def mse_loss_onehot(x, y):
+        y_onehot = torch.nn.functional.one_hot(y, num_classes=config["modular_base"])
+        return torch.nn.functional.mse_loss(x, y_onehot.to(x.dtype))
+    loss_fn = mse_loss_onehot
 elif config["loss_function"] == "CrossEntropy":
     loss_fn = torch.nn.CrossEntropyLoss()
 else:
