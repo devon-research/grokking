@@ -51,8 +51,7 @@ this_directory = os.path.dirname(os.path.abspath(__file__))
 data_directory = os.path.join(this_directory, "..", "data")
 dataset_prefix = f"{config['modular_base']}-{config['train_fraction']}"
 dataset_name = dataset_prefix + "-datasets.pt"
-ds_train, ds_valid = torch.load(os.path.join(data_directory,
-                                             dataset_name))
+ds_train, ds_valid = torch.load(os.path.join(data_directory, dataset_name))
 
 # Process the strings in the configuration.
 if config["model"] == "GromovMLP":
