@@ -8,7 +8,7 @@
 #SBATCH --time=00:30:00          # total run time limit (HH:MM:SS)
 
 module purge
-module load anaconda3/2022.5
+module load anaconda3/2023.3
 conda activate grokking
 
 python scripts/train.py
