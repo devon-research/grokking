@@ -108,6 +108,9 @@ elif config["logit_dtype"] == "float32":
 else:
     raise ValueError(f"Unknown logit data type: {config['logit_dtype']}")
 
+if config["batch_size"] == -1:
+    config["full_batch"] = True
+
 if config["full_batch"]:
     config["batch_size"] = len(ds_train)
 
