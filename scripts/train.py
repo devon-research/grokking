@@ -29,13 +29,23 @@ def train(model,
             loss.backward()
             optimizer.step()
             optimizer.zero_grad()
-            wandb.log({"loss_train": loss.item()})
+            wandb.log({"batch_loss_train": loss.item()})
         if epoch % validate_every == 0:
             model.eval()
             with torch.inference_mode():
-                loss_valid = sum(loss_fn(model(xb).to(logit_dtype), yb)
-                                 for xb, yb in dl_valid) / len(dl_valid)
-            wandb.log({"loss_valid": loss_valid.item()}, commit=False)
+                for split in ["train", "valid"]:
+                    dataloader = dl_train if split == "train" else dl_valid
+                    loss = 0.0
+                    accuracy = 0.0
+                    for xb, yb in dataloader:
+                        pred = model(xb)
+                        loss += loss_fn(pred.to(logit_dtype), yb)
+                        accuracy += (pred.argmax(dim=1) == yb).float().mean()
+                    loss /= len(dataloader)
+                    accuracy /= len(dataloader)
+                    wandb.log({f"loss_{split}": loss.item(),
+                               f"accuracy_{split}": accuracy.item()},
+                               commit=False)
             checkpoint_name = f"checkpoint-{epoch}.pt"
             checkpoint_path = os.path.join(wandb.run.dir, checkpoint_name)
             torch.save(model.state_dict(), checkpoint_path)
@@ -99,7 +109,7 @@ else:
 if config["full_batch"]:
     config["batch_size"] = len(ds_train)
 
-wandb.init(project="grokking", config=config, tags=["initial"])
+wandb.init(project="grokking", config=config, tags=["1.0"])
 
 # Train the model.
 train(model = model,
