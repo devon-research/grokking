@@ -1,5 +1,6 @@
 import yaml
 import os
+import argparse
 import torch
 import torch.nn.functional as F
 # import einops
@@ -7,6 +8,12 @@ import torch.nn.functional as F
 # Read the configuration from the YAML file.
 with open("config.yaml") as f:
     config = yaml.safe_load(f)
+
+# Override the configuration with command-line arguments.
+parser = argparse.ArgumentParser()
+for key in config.keys():
+    parser.add_argument("--" + key, default=config[key], type=type(config[key]))
+config = vars(parser.parse_args())
 
 P = config["modular_base"]
 
