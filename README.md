@@ -30,12 +30,18 @@ python ./scripts/data.py
 python ./scripts/train.py
 ```
 
+Or, if you are on a GPU cluster, do:
+```
+python ./scripts/data.py
+sbatch ./scripts/job.slurm
+```
+
 If you are going to want to use the Julia scripts to run many experiments in one go, then also install the relevant Julia packages:
 ```
 julia -e 'import Pkg; Pkg.add(["DrWatson", "ClusterManagers"])'
 ```
 
-To run many experiments at once, do:
+To run many experiments at once on a GPU cluster, do:
 ```
 sbatch ./scripts/multitask.slurm
 ```
