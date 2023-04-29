@@ -21,6 +21,7 @@ pip install wandb accelerate
 git clone git@github.com:devonwp/grokking.git
 pip install -e grokking
 wandb offline
+julia -e 'import Pkg; Pkg.add("DrWatson")'
 ```
 
 To generate the data and train a model, do:
