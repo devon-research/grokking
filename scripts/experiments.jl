@@ -1,6 +1,10 @@
-using DrWatson
+using Distributed, ClusterManagers
 
-function run_training(params)
+addprocs_slurm(parse(Int, ENV["SLURM_NTASKS"]));
+
+@everywhere using DrWatson
+
+@everywhere function run_training(params)
     option_list = []
     for (key, value) in params
         push!(option_list, string("--", key))
@@ -26,4 +30,4 @@ param_options = Dict(
     "batch_size" => [128],
 );
 
-@time map(run_training, dict_list(param_options))
+@time pmap(run_training, dict_list(param_options))
