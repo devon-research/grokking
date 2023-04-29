@@ -17,11 +17,11 @@ To set things up on a GPU cluster, use the following instead:
 conda create --name grokking pytorch pytorch-cuda=11.8 -c pytorch -c nvidia
 conda activate grokking
 conda install pyyaml tqdm
-pip install wandb accelerate
+pip install accelerate wandb
+julia -e 'import Pkg; Pkg.add(["DrWatson", "ClusterManagers"])'
 git clone git@github.com:devonwp/grokking.git
 pip install -e grokking
 wandb offline
-julia -e 'import Pkg; Pkg.add(["DrWatson", "ClusterManagers"])'
 ```
 
 To generate the data and train a model, do:
