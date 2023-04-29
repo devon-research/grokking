@@ -1,5 +1,4 @@
 # Relevant for the data and model...
-random_seed: 23093
 modular_base: 97
 # Relevant for the data...
 train_fraction: 0.3
@@ -7,6 +6,7 @@ train_fraction: 0.3
 model: GromovMLP
 hidden_dim: 512
 # Relevant for the optimization...
+random_seed: 23093
 optimizer: Adam
 loss_function: MSE
 learning_rate: 0.001

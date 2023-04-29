@@ -12,7 +12,6 @@ end
 
 param_options = Dict(
     # Relevant for the data and model...
-    "random_seed" => [23093, 9082],
     "modular_base" => [97, 113],
     # Relevant for the data...
     "train_fraction" => [0.3],
@@ -20,6 +19,7 @@ param_options = Dict(
     "model" => ["GromovMLP"],
     "hidden_dim" => [512],
     # Relevant for the optimization...
+    "random_seed" => [23093, 9082],
     "optimizer" => ["Adam"],
     "loss_function" => ["CrossEntropy"],
     "learning_rate" => [0.001],
