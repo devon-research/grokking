@@ -18,7 +18,6 @@ conda create --name grokking pytorch pytorch-cuda=11.8 -c pytorch -c nvidia
 conda activate grokking
 conda install pyyaml tqdm
 pip install accelerate wandb
-julia -e 'import Pkg; Pkg.add(["DrWatson", "ClusterManagers"])'
 git clone git@github.com:devonwp/grokking.git
 pip install -e grokking
 wandb offline
@@ -30,4 +29,14 @@ To generate the data and train a model, do:
 cd grokking
 python ./scripts/data.py
 python ./scripts/train.py
+```
+
+If you are going to want to use the Julia scripts to run many experiments in one go, then also install the relevant Julia packages:
+```
+julia -e 'import Pkg; Pkg.add(["DrWatson", "ClusterManagers"])'
+```
+
+To run many experiments at once, do:
+```
+sbatch ./scripts/multitask.slurm
 ```
