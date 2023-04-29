@@ -13,8 +13,9 @@ learning_rate: 0.001
 full_batch: false
 batch_size: 128
 n_epochs: 15000
-validate_every: 100
 weight_decay: 1.0
 beta_1: 0.9
 beta_2: 0.98
+# Relevant for logging...
 logit_dtype: float64
+validate_every: 100
