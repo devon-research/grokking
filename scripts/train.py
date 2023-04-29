@@ -72,6 +72,8 @@ else:
 
 if config["optimizer"] == "Adam":
     optimizer = torch.optim.Adam(model.parameters(), lr=config["learning_rate"])
+elif config["optimizer"] == "SGD":
+    optimizer = torch.optim.SGD(model.parameters(), lr=config["learning_rate"])
 else:
     raise ValueError(f"Unknown optimizer: {config['optimizer']}")
 
