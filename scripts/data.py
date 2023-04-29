@@ -9,7 +9,6 @@ with open("config.yaml") as f:
     config = yaml.safe_load(f)
 
 P = config["modular_base"]
-train_frac = config["train_fraction"]
 
 # Construct the inputs and outputs.
 input_x = torch.arange(P).repeat_interleave(P)
@@ -23,14 +22,8 @@ outputs = inputs.sum(dim=1) % P
 # Construct the torch dataset.
 dataset = torch.utils.data.TensorDataset(inputs, outputs)
 
-# Split the dataset into training and validation sets.
-torch.manual_seed(config["random_seed"])
-dataset_train, dataset_valid = torch.utils.data.random_split(
-    dataset, [train_frac, 1 - train_frac])
-
 # Write the data to a file.
 this_directory = os.path.dirname(os.path.abspath(__file__))
 data_directory = os.path.join(this_directory, "..", "data")
 os.makedirs(data_directory, exist_ok=True)
-torch.save([dataset_train, dataset_valid],
-           os.path.join(data_directory, f"{P}-{train_frac}-datasets.pt"))
+torch.save(dataset, os.path.join(data_directory, f"{P}-dataset.pt"))
