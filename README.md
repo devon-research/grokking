@@ -4,9 +4,8 @@
 To set things up on a laptop using an Anaconda distribution, the following should work on a Windows machine. Navigate to the desired directory and run the following in the Anaconda Prompt:
 
 ```
-conda create --name grokking python=3.9
+conda create --name grokking pytorch cpuonly -c pytorch
 conda activate grokking
-conda install pytorch cpuonly -c pytorch
 conda install matplotlib tqdm
 pip install einops accelerate wandb
 git clone git@github.com:devonwp/grokking.git
