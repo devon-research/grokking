@@ -114,7 +114,7 @@ if config["batch_size"] == -1:
 if config["full_batch"]:
     config["batch_size"] = len(ds_train)
 
-wandb.init(project="grokking", config=config, tags=["1.0"])
+wandb.init(project="grokking", config=config, tags=["1.1"])
 
 # Train the model.
 train(model = model,
