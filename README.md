@@ -48,3 +48,5 @@ To run many experiments at once on a GPU cluster, do:
 ```
 sbatch ./scripts/multitask.slurm
 ```
+
+One can then use `wandb sync` to sync results to W&B.
