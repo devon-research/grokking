@@ -19,3 +19,4 @@ beta_2: 0.98
 # Relevant for logging...
 logit_dtype: float64
 validate_every: 100
+save_checkpoints: false

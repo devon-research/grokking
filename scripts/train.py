@@ -16,6 +16,7 @@ def train(model,
           batch_size,
           n_epochs,
           validate_every,
+          save_checkpoints,
           logit_dtype):
     dl_train = torch.utils.data.DataLoader(ds_train, batch_size)
     dl_valid = torch.utils.data.DataLoader(ds_valid, batch_size, shuffle=False)
@@ -46,10 +47,11 @@ def train(model,
                     wandb.log({f"loss_{split}": loss.item(),
                                f"accuracy_{split}": accuracy.item()},
                                commit=False)
-            checkpoint_name = f"checkpoint-{epoch}.pt"
-            checkpoint_path = os.path.join(wandb.run.dir, checkpoint_name)
-            torch.save(model.state_dict(), checkpoint_path)
-            wandb.save(checkpoint_path)
+            if save_checkpoints:
+                checkpoint_name = f"checkpoint-{epoch}.pt"
+                checkpoint_path = os.path.join(wandb.run.dir, checkpoint_name)
+                torch.save(model.state_dict(), checkpoint_path)
+                wandb.save(checkpoint_path)
             model.train()
 
 # Read the configuration from the YAML file.
@@ -120,6 +122,7 @@ train(model = model,
       batch_size = config["batch_size"],
       n_epochs = config["n_epochs"],
       validate_every = config["validate_every"],
+      save_checkpoints=config["save_checkpoints"],
       logit_dtype = logit_dtype)
 
 wandb.finish()
