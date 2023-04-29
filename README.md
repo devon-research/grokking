@@ -15,6 +15,7 @@ pip install -e .
 
 To set things up on a GPU cluster, use the following instead:
 ```
+module load anaconda3/2023.3
 conda create --name grokking pytorch pytorch-cuda=11.8 -c pytorch -c nvidia
 conda activate grokking
 conda install pyyaml tqdm
@@ -39,6 +40,7 @@ sbatch ./scripts/job.slurm
 
 If you are going to want to use the Julia scripts to run many experiments in one go, then also install the relevant Julia packages:
 ```
+module load julia/1.8.2
 julia -e 'import Pkg; Pkg.add(["DrWatson", "ClusterManagers"])'
 ```
 
