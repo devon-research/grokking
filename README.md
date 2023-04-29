@@ -9,7 +9,8 @@ conda activate grokking
 conda install pyyaml tqdm
 pip install accelerate wandb
 git clone git@github.com:devonwp/grokking.git
-pip install -e grokking
+cd grokking
+pip install -e .
 ```
 
 To set things up on a GPU cluster, use the following instead:
@@ -19,13 +20,13 @@ conda activate grokking
 conda install pyyaml tqdm
 pip install accelerate wandb
 git clone git@github.com:devonwp/grokking.git
-pip install -e grokking
+cd grokking
+pip install -e .
 wandb offline
 ```
 
 To generate the data and train a model, do:
 ```
-cd grokking
 python ./scripts/data.py
 python ./scripts/train.py
 ```
