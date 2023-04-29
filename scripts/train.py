@@ -57,6 +57,13 @@ data_directory = os.path.join(this_directory, "..", "data")
 dataset_name = f"{config['modular_base']}-dataset.pt"
 dataset = torch.load(os.path.join(data_directory, dataset_name))
 
+# Set the random seed and initialize wandb.
+torch.manual_seed(config["random_seed"])
+
+# Split the dataset into training and validation sets.
+ds_train, ds_valid = torch.utils.data.random_split(
+    dataset, [config["train_fraction"], 1.0 - config["train_fraction"]])
+
 # Process the strings in the configuration.
 if config["model"] == "GromovMLP":
     model = GromovMLP(config["modular_base"], config["hidden_dim"])
@@ -88,13 +95,6 @@ else:
 
 if config["full_batch"]:
     config["batch_size"] = len(ds_train)
-
-# Set the random seed and initialize wandb.
-torch.manual_seed(config["random_seed"])
-
-# Split the dataset into training and validation sets.
-ds_train, ds_valid = torch.utils.data.random_split(
-    dataset, [config["train_fraction"], 1.0 - config["train_fraction"]])
 
 wandb.init(project="grokking", config=config, tags=["initial"])
 
