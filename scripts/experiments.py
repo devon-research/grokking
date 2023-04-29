@@ -1,6 +1,7 @@
 import itertools
 import subprocess
 import shlex
+import os
 
 # This has the same functionality as DrWatson's dict_list in Julia.
 def product_dict_list(**kwargs):
@@ -43,6 +44,20 @@ sbatch_options = {
     # which is fine but it has a relatively small upper limit on the
     # number of jobs that can be submitted simultaneously.
 }
+
+this_directory = os.path.dirname(os.path.abspath(__file__))
+data_directory = os.path.join(this_directory, "..", "data")
+
+data_script_params = ["modular_base"]
+data_option_lists = {param: train_option_lists[param] for param in data_script_params}
+print("Ensuring presence of data...")
+for python_options in product_dict_list(**data_option_lists):
+    file_name = f'{"-".join(str(x) for x in python_options.values())}-dataset.pt'
+    if not os.path.isfile(os.path.join(data_directory, file_name)):
+        print(f"Generating {file_name}...")
+        python_option_string = option_string(python_options, sep=" ")
+        run_command(f'python scripts/data.py {python_option_string}')
+print("Done ensuring presence of data.")
 
 print("Submitting training jobs...")
 for python_options in product_dict_list(**train_option_lists):
