@@ -38,15 +38,9 @@ python ./scripts/data.py
 sbatch ./scripts/job.slurm
 ```
 
-If you are going to want to use the Julia scripts to run many experiments in one go, then also install the relevant Julia packages:
-```
-module load julia/1.8.2
-julia -e 'import Pkg; Pkg.add(["DrWatson", "ClusterManagers"])'
-```
-
 To run many experiments at once on a GPU cluster, do:
 ```
-sbatch ./scripts/multitask.slurm
+python ./scripts/experiments.py
 ```
 
 One can then use `wandb sync` to sync results to W&B.
