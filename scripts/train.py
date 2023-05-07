@@ -5,7 +5,7 @@ import wandb
 import torch
 from accelerate import Accelerator # easy GPUs
 from tqdm import tqdm
-from src.models import GromovMLP
+from src.models import GromovMLP, NandaTransformer
 
 # Train a model on the given dataset.
 def train(model,
@@ -79,9 +79,17 @@ ds_train, ds_valid = torch.utils.data.random_split(
 
 # Process the strings in the configuration.
 if config["model"] == "GromovMLP":
-    model = GromovMLP(config["modular_base"], config["hidden_dim"])
+    model = GromovMLP(config["modular_base"], config["mlp_hidden_dim"])
     if config["use_equals_symbol"]:
         raise ValueError("GromovMLP does not support the equals symbol.")
+elif config["model"] == "NandaTransformer":
+    model = NandaTransformer(modular_base=config["modular_base"],
+                             embed_dim = config["embed_dim"],
+                             intermediate_mlp_dim = config["mlp_hidden_dim"],
+                             max_sequence_len = 3,
+                             num_attention_heads = config["num_attention_heads"])
+    if not config["use_equals_symbol"]:
+        raise ValueError("NandaTransformer requires the equals symbol.")
 else:
     raise ValueError(f"Unknown model: {config['model']}")
 
@@ -124,7 +132,7 @@ if config["batch_size"] == -1:
 if config["full_batch"]:
     config["batch_size"] = len(ds_train)
 
-wandb.init(project="grokking", config=config, tags=["1.1"])
+wandb.init(project="grokking", config=config, tags=["1.3"])
 
 # Train the model.
 train(model = model,
