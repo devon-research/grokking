@@ -87,6 +87,11 @@ if config["optimizer"] == "Adam":
     optimizer = torch.optim.Adam(model.parameters(), lr=config["learning_rate"])
 elif config["optimizer"] == "SGD":
     optimizer = torch.optim.SGD(model.parameters(), lr=config["learning_rate"])
+elif config["optimizer"] == "AdamW":
+    optimizer = torch.optim.AdamW(model.parameters(),
+                                  lr=config["learning_rate"],
+                                  betas=(config["beta_1"], config["beta_2"]),
+                                  weight_decay=config["weight_decay"])
 else:
     raise ValueError(f"Unknown optimizer: {config['optimizer']}")
 
