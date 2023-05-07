@@ -2,6 +2,7 @@ import itertools
 import subprocess
 import shlex
 import os
+import yaml
 
 # This has the same functionality as DrWatson's dict_list in Julia.
 def product_dict_list(**kwargs):
@@ -31,6 +32,15 @@ train_option_lists = {
     "learning_rate": [0.001, 0.0001],
     "batch_size": [128, 1024, -1],
 }
+
+# Read the configuration from the YAML file.
+with open("config.yaml") as f:
+    config = yaml.safe_load(f)
+
+# Fill in the missing options from the YAML file.
+for key in config:
+    if key not in train_option_lists:
+        train_option_lists[key] = [config[key]]
 
 sbatch_options = {
     "job-name": "grokking",
