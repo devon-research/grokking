@@ -67,7 +67,7 @@ config = vars(parser.parse_args())
 # Load the datasets.
 this_directory = os.path.dirname(os.path.abspath(__file__))
 data_directory = os.path.join(this_directory, "..", "data")
-dataset_name = f"{config['modular_base']}-dataset.pt"
+dataset_name = f"{config['modular_base']}-{config['use_equals_symbol']}-dataset.pt"
 dataset = torch.load(os.path.join(data_directory, dataset_name))
 
 # Set the random seed and initialize wandb.
@@ -80,6 +80,8 @@ ds_train, ds_valid = torch.utils.data.random_split(
 # Process the strings in the configuration.
 if config["model"] == "GromovMLP":
     model = GromovMLP(config["modular_base"], config["hidden_dim"])
+    if config["use_equals_symbol"]:
+        raise ValueError("GromovMLP does not support the equals symbol.")
 else:
     raise ValueError(f"Unknown model: {config['model']}")
 
@@ -96,8 +98,11 @@ else:
     raise ValueError(f"Unknown optimizer: {config['optimizer']}")
 
 if config["loss_function"] == "MSE":
+    vocab_size = config["modular_base"]
+    if config["use_equals_symbol"]:
+        vocab_size += 1
     def mse_loss_onehot(x, y):
-        y_onehot = torch.nn.functional.one_hot(y, num_classes=config["modular_base"])
+        y_onehot = torch.nn.functional.one_hot(y, num_classes=vocab_size)
         return torch.nn.functional.mse_loss(x, y_onehot.to(x.dtype))
     loss_fn = mse_loss_onehot
 elif config["loss_function"] == "CrossEntropy":

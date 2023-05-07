@@ -2,6 +2,7 @@
 modular_base: 97
 # Relevant for the data...
 train_fraction: 0.3
+use_equals_symbol: false
 # Relevant for the model...
 model: GromovMLP
 hidden_dim: 512

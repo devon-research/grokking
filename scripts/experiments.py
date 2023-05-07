@@ -48,7 +48,7 @@ sbatch_options = {
 this_directory = os.path.dirname(os.path.abspath(__file__))
 data_directory = os.path.join(this_directory, "..", "data")
 
-data_script_params = ["modular_base"]
+data_script_params = ["modular_base", "use_equals_symbol"]
 data_option_lists = {param: train_option_lists[param] for param in data_script_params}
 print("Ensuring presence of data...")
 for python_options in product_dict_list(**data_option_lists):
