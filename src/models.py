@@ -79,3 +79,25 @@ class NandaTransformer(nn.Module):
         # The following has shape (batch_size, max_sequence_len, modular_base + 1)
         # before the slice.
         return F.linear(hidden_states, self.token_unembeddings.weight)[:, -1]
+    
+    def get_mlp_activations(self, input_ids: torch.LongTensor) -> torch.FloatTensor:
+        """Computes the final-token activations of the MLP layer for a given input.
+        
+        Args:
+            input_ids: LongTensor of shape (batch_size, max_sequence_len)
+            containing the input token IDs for the binary modular task.
+        
+        Returns:
+            FloatTensor of shape (batch_size, intermediate_mlp_dim)
+            containing the activations of the MLP layer for the given input.
+        """
+        hidden_states = self.token_embeddings(input_ids) \
+            + self.positional_embeddings(torch.arange(input_ids.size(1), device=input_ids.device))
+        hidden_states = self.attention(query=hidden_states,
+                                       key=hidden_states,
+                                       value=hidden_states,
+                                       need_weights=False,
+                                       is_causal=True)[0]
+        hidden_states = self.feedforward[0](hidden_states) # Apply the first layer of the MLP.
+        hidden_states = self.feedforward[1](hidden_states) # Apply the nonlinearity.
+        return hidden_states[:, -1, :]
