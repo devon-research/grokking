@@ -101,7 +101,7 @@ elif config["poisoning_scheme"] == "RandomIncrement":
     idxs_to_poison = torch.randperm(len(train_outputs))[:num_poisoned]
     train_outputs[idxs_to_poison] = (train_outputs[idxs_to_poison] + 1) % P
 elif config["poisoning_scheme"] == "17Fixed":
-    config["poisoned_fraction"] = round((int(P / 17) + 1) / P, 3) 
+    config["poisoned_fraction"] = round((int(P / 17) + 1) / P, 3)
     for i in range(len(train_outputs)):
         if train_inputs[i, 1] % 17 == 0:
             train_outputs[i] = train_inputs[i, 1]
