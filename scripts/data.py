@@ -3,17 +3,11 @@ import os
 import argparse
 import torch
 import torch.nn.functional as F
+from src.utils import parse_config
 # import einops
 
-# Read the configuration from the YAML file.
-with open("config.yaml") as f:
-    config = yaml.safe_load(f)
-
-# Override the configuration with command-line arguments.
-parser = argparse.ArgumentParser()
-for key in config.keys():
-    parser.add_argument("--" + key, default=config[key], type=type(config[key]))
-config = vars(parser.parse_args())
+# Reads in the configuration from the YAML file and overrides it with command-line arguments.
+config = parse_config()
 
 P = config["modular_base"]
 use_equals = config["use_equals_symbol"]

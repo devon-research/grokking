@@ -6,6 +6,7 @@ import torch
 from accelerate import Accelerator # easy GPUs
 from tqdm import tqdm
 from src.models import GromovMLP, NandaTransformer
+from src.utils import parse_config
 
 # Train a model on the given dataset.
 def train(model,
@@ -54,15 +55,8 @@ def train(model,
                 wandb.save(checkpoint_path)
             model.train()
 
-# Read the configuration from the YAML file.
-with open("config.yaml") as f:
-    config = yaml.safe_load(f)
-
-# Override the configuration with command-line arguments.
-parser = argparse.ArgumentParser()
-for key in config.keys():
-    parser.add_argument("--" + key, default=config[key], type=type(config[key]))
-config = vars(parser.parse_args())
+# Reads in the configuration from the YAML file and overrides it with command-line arguments.
+config = parse_config()
 
 # Load the datasets.
 this_directory = os.path.dirname(os.path.abspath(__file__))
