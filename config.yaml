@@ -3,6 +3,8 @@ modular_base: 113
 # Relevant for the data...
 train_fraction: 0.3
 use_equals_symbol: true
+poisoned_fraction: 0.01
+poisoning_scheme: 17Fixed
 # Relevant for the model...
 model: NandaTransformer
 embed_dim: 128

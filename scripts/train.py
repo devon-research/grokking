@@ -87,6 +87,32 @@ elif config["model"] == "NandaTransformer":
 else:
     raise ValueError(f"Unknown model: {config['model']}")
 
+# Poison the training data.
+P = config["modular_base"]
+inputs, outputs = dataset.tensors
+train_inputs = inputs[ds_train.indices]
+train_outputs = outputs[ds_train.indices]
+
+num_poisoned = int(len(train_outputs) * config["poisoned_fraction"])
+if config["poisoning_scheme"] == "RandomUniform":
+    idxs_to_poison = torch.randperm(len(train_outputs))[:num_poisoned]
+    train_outputs[idxs_to_poison] = torch.randint(0, P, (len(idxs_to_poison),))
+elif config["poisoning_scheme"] == "RandomIncrement":
+    idxs_to_poison = torch.randperm(len(train_outputs))[:num_poisoned]
+    train_outputs[idxs_to_poison] = (train_outputs[idxs_to_poison] + 1) % P
+elif config["poisoning_scheme"] == "17Fixed":
+    config["poisoned_fraction"] = round((int(P / 17) + 1) / P, 3) 
+    for i in range(len(train_outputs)):
+        if train_inputs[i, 1] % 17 == 0:
+            train_outputs[i] = train_inputs[i, 1]
+elif config["poisoning_scheme"] == "Control":
+    pass
+else:
+    raise ValueError(f"Unknown poisoning scheme: {config['poisoning_scheme']}")
+
+config["actual_poisoned_fraction"] = sum(train_outputs != outputs[ds_train.indices]) / len(train_outputs)
+outputs[ds_train.indices] = train_outputs
+
 if config["optimizer"] == "Adam":
     optimizer = torch.optim.Adam(model.parameters(), lr=config["learning_rate"])
 elif config["optimizer"] == "SGD":
@@ -127,6 +153,21 @@ if config["full_batch"]:
     config["batch_size"] = len(ds_train)
 
 wandb.init(project="grokking", config=config, tags=["1.3"])
+
+ds_train_path = os.path.join(wandb.run.dir, "training_data.pt")
+torch.save(ds_train, ds_train_path)
+wandb.save(ds_train_path)
+
+ds_test_path = os.path.join(wandb.run.dir, "test_data.pt")
+torch.save(ds_train, ds_test_path)
+wandb.save(ds_test_path)
+ds_train_path = os.path.join(wandb.run.dir, "training_data.pt")
+torch.save(ds_train, ds_train_path)
+wandb.save(ds_train_path)
+
+ds_test_path = os.path.join(wandb.run.dir, "test_data.pt")
+torch.save(ds_train, ds_test_path)
+wandb.save(ds_test_path)
 
 # Train the model.
 train(model = model,
