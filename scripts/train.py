@@ -161,13 +161,6 @@ wandb.save(ds_train_path)
 ds_test_path = os.path.join(wandb.run.dir, "test_data.pt")
 torch.save(ds_train, ds_test_path)
 wandb.save(ds_test_path)
-ds_train_path = os.path.join(wandb.run.dir, "training_data.pt")
-torch.save(ds_train, ds_train_path)
-wandb.save(ds_train_path)
-
-ds_test_path = os.path.join(wandb.run.dir, "test_data.pt")
-torch.save(ds_train, ds_test_path)
-wandb.save(ds_test_path)
 
 # Train the model.
 train(model = model,
