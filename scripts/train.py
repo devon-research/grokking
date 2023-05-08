@@ -95,14 +95,22 @@ train_outputs = outputs[ds_train.indices]
 
 num_poisoned = int(len(train_outputs) * config["poisoned_fraction"])
 if config["poisoning_scheme"] == "RandomUniform":
+    config["input_to_poison"] = -1
     idxs_to_poison = torch.randperm(len(train_outputs))[:num_poisoned]
     train_outputs[idxs_to_poison] = torch.randint(0, P, (len(idxs_to_poison),))
 elif config["poisoning_scheme"] == "RandomIncrement":
+    config["input_to_poison"] = -1
     idxs_to_poison = torch.randperm(len(train_outputs))[:num_poisoned]
     train_outputs[idxs_to_poison] = (train_outputs[idxs_to_poison] + 1) % P
 elif config["poisoning_scheme"] == "17Fixed":
+    config["input_to_poison"] = 17
     config["poisoned_fraction"] = round((int(P / 17) + 1) / P, 3)
     idxs_to_poison = train_inputs[:, 1] % 17 == 0
+    train_outputs[idxs_to_poison] = train_inputs[idxs_to_poison, 1]
+elif config["poisoning_scheme"] == "NFixed":
+    N = config["input_to_poison"]
+    config["poisoned_fraction"] = round((int(P / N) + 1) / P, 3)
+    idxs_to_poison = train_inputs[:, 1] % N == 0
     train_outputs[idxs_to_poison] = train_inputs[idxs_to_poison, 1]
 elif config["poisoning_scheme"] == "Control":
     pass

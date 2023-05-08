@@ -4,7 +4,8 @@ modular_base: 113
 train_fraction: 0.3
 use_equals_symbol: true
 poisoned_fraction: 0.01
-poisoning_scheme: 17Fixed
+poisoning_scheme: NFixed
+input_to_poison: 17
 # Relevant for the model...
 model: NandaTransformer
 embed_dim: 128
