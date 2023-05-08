@@ -102,9 +102,8 @@ elif config["poisoning_scheme"] == "RandomIncrement":
     train_outputs[idxs_to_poison] = (train_outputs[idxs_to_poison] + 1) % P
 elif config["poisoning_scheme"] == "17Fixed":
     config["poisoned_fraction"] = round((int(P / 17) + 1) / P, 3)
-    for i in range(len(train_outputs)):
-        if train_inputs[i, 1] % 17 == 0:
-            train_outputs[i] = train_inputs[i, 1]
+    idxs_to_poison = train_inputs[:, 1] % 17 == 0
+    train_outputs[idxs_to_poison] = train_inputs[idxs_to_poison, 1]
 elif config["poisoning_scheme"] == "Control":
     pass
 else:
