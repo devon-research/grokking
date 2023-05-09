@@ -112,6 +112,11 @@ elif config["poisoning_scheme"] == "NFixed":
     config["poisoned_fraction"] = round((int(P / N) + 1) / P, 3)
     idxs_to_poison = train_inputs[:, 1] % N == 0
     train_outputs[idxs_to_poison] = train_inputs[idxs_to_poison, 1]
+elif config["poisoning_scheme"] == "NIncrement":
+    N = config["input_to_poison"]
+    config["poisoned_fraction"] = round((int(P / N) + 1) / P, 3)
+    idxs_to_poison = train_inputs[:, 1] % N == 0
+    train_outputs[idxs_to_poison] = train_outputs[idxs_to_poison] + 1
 elif config["poisoning_scheme"] == "Control":
     pass
 else:
