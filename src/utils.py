@@ -1,6 +1,7 @@
 import yaml
 import argparse
 
+
 def _str2bool(s):
     s_l = s.lower()
     if s_l in ["true", "1"]:
@@ -9,6 +10,7 @@ def _str2bool(s):
         return False
     else:
         raise ValueError(f"Invalid boolean value: {s}")
+
 
 def parse_config(config_path="config.yaml"):
     # Read the configuration from the YAML file.

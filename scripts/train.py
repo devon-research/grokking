@@ -1,26 +1,31 @@
 import os
 import wandb
 import torch
-from accelerate import Accelerator # easy GPUs
+from accelerate import Accelerator  # easy GPUs
 from tqdm import tqdm
 from src.models import GromovMLP, NandaTransformer
 from src.utils import parse_config
 
+
 # Train a model on the given dataset.
-def train(model,
-          ds_train,
-          ds_valid,
-          optimizer,
-          loss_fn,
-          batch_size,
-          n_epochs,
-          validate_every,
-          save_checkpoints,
-          logit_dtype):
+def train(
+    model,
+    ds_train,
+    ds_valid,
+    optimizer,
+    loss_fn,
+    batch_size,
+    n_epochs,
+    validate_every,
+    save_checkpoints,
+    logit_dtype,
+):
     dl_train = torch.utils.data.DataLoader(ds_train, batch_size)
     dl_valid = torch.utils.data.DataLoader(ds_valid, batch_size, shuffle=False)
     acc = Accelerator()
-    model, optimizer, dl_train, dl_valid = acc.prepare(model, optimizer, dl_train, dl_valid)
+    model, optimizer, dl_train, dl_valid = acc.prepare(
+        model, optimizer, dl_train, dl_valid
+    )
     model.train()
     optimizer.zero_grad()
     for epoch in tqdm(range(n_epochs)):
@@ -43,15 +48,20 @@ def train(model,
                         accuracy += (pred.argmax(dim=1) == yb).float().mean()
                     loss /= len(dataloader)
                     accuracy /= len(dataloader)
-                    wandb.log({f"loss_{split}": loss.item(),
-                               f"accuracy_{split}": accuracy.item()},
-                               commit=False)
+                    wandb.log(
+                        {
+                            f"loss_{split}": loss.item(),
+                            f"accuracy_{split}": accuracy.item(),
+                        },
+                        commit=False,
+                    )
             if save_checkpoints:
                 checkpoint_name = f"checkpoint-{epoch}.pt"
                 checkpoint_path = os.path.join(wandb.run.dir, checkpoint_name)
                 torch.save(model.state_dict(), checkpoint_path)
                 wandb.save(checkpoint_path)
             model.train()
+
 
 # Reads in the configuration from the YAML file and overrides it with command-line arguments.
 config = parse_config()
@@ -67,7 +77,8 @@ torch.manual_seed(config["random_seed"])
 
 # Split the dataset into training and validation sets.
 ds_train, ds_valid = torch.utils.data.random_split(
-    dataset, [config["train_fraction"], 1.0 - config["train_fraction"]])
+    dataset, [config["train_fraction"], 1.0 - config["train_fraction"]]
+)
 
 # Process the strings in the configuration.
 if config["model"] == "GromovMLP":
@@ -75,11 +86,13 @@ if config["model"] == "GromovMLP":
     if config["use_equals_symbol"]:
         raise ValueError("GromovMLP does not support the equals symbol.")
 elif config["model"] == "NandaTransformer":
-    model = NandaTransformer(modular_base=config["modular_base"],
-                             embed_dim = config["embed_dim"],
-                             intermediate_mlp_dim = config["mlp_hidden_dim"],
-                             max_sequence_len = 3,
-                             num_attention_heads = config["num_attention_heads"])
+    model = NandaTransformer(
+        modular_base=config["modular_base"],
+        embed_dim=config["embed_dim"],
+        intermediate_mlp_dim=config["mlp_hidden_dim"],
+        max_sequence_len=3,
+        num_attention_heads=config["num_attention_heads"],
+    )
     if not config["use_equals_symbol"]:
         raise ValueError("NandaTransformer requires the equals symbol.")
 else:
@@ -120,7 +133,9 @@ elif config["poisoning_scheme"] == "Control":
 else:
     raise ValueError(f"Unknown poisoning scheme: {config['poisoning_scheme']}")
 
-config["actual_poisoned_fraction"] = sum(train_outputs != outputs[ds_train.indices]) / len(train_outputs)
+config["actual_poisoned_fraction"] = sum(
+    train_outputs != outputs[ds_train.indices]
+) / len(train_outputs)
 outputs[ds_train.indices] = train_outputs
 
 if config["optimizer"] == "Adam":
@@ -128,10 +143,12 @@ if config["optimizer"] == "Adam":
 elif config["optimizer"] == "SGD":
     optimizer = torch.optim.SGD(model.parameters(), lr=config["learning_rate"])
 elif config["optimizer"] == "AdamW":
-    optimizer = torch.optim.AdamW(model.parameters(),
-                                  lr=config["learning_rate"],
-                                  betas=(config["beta_1"], config["beta_2"]),
-                                  weight_decay=config["weight_decay"])
+    optimizer = torch.optim.AdamW(
+        model.parameters(),
+        lr=config["learning_rate"],
+        betas=(config["beta_1"], config["beta_2"]),
+        weight_decay=config["weight_decay"],
+    )
 else:
     raise ValueError(f"Unknown optimizer: {config['optimizer']}")
 
@@ -139,9 +156,11 @@ if config["loss_function"] == "MSE":
     vocab_size = config["modular_base"]
     if config["use_equals_symbol"]:
         vocab_size += 1
+
     def mse_loss_onehot(x, y):
         y_onehot = torch.nn.functional.one_hot(y, num_classes=vocab_size)
         return torch.nn.functional.mse_loss(x, y_onehot.to(x.dtype))
+
     loss_fn = mse_loss_onehot
 elif config["loss_function"] == "CrossEntropy":
     loss_fn = torch.nn.CrossEntropyLoss()
@@ -173,15 +192,17 @@ torch.save(ds_valid, ds_test_path)
 wandb.save(ds_test_path)
 
 # Train the model.
-train(model = model,
-      ds_train = ds_train,
-      ds_valid = ds_valid,
-      optimizer = optimizer,
-      loss_fn = loss_fn,
-      batch_size = config["batch_size"],
-      n_epochs = config["n_epochs"],
-      validate_every = config["validate_every"],
-      save_checkpoints=config["save_checkpoints"],
-      logit_dtype = logit_dtype)
+train(
+    model=model,
+    ds_train=ds_train,
+    ds_valid=ds_valid,
+    optimizer=optimizer,
+    loss_fn=loss_fn,
+    batch_size=config["batch_size"],
+    n_epochs=config["n_epochs"],
+    validate_every=config["validate_every"],
+    save_checkpoints=config["save_checkpoints"],
+    logit_dtype=logit_dtype,
+)
 
 wandb.finish()
