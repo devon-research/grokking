@@ -77,14 +77,20 @@ class NandaTransformer(nn.Module):
             FloatTensor of shape (batch_size, modular_base) containing the
             logits for the output token.
         """
+        max_sequence_len = input_ids.size(1)
+        device = input_ids.device
         hidden_states = self.token_embeddings(input_ids) + self.positional_embeddings(
-            torch.arange(input_ids.size(1), device=input_ids.device)
+            torch.arange(max_sequence_len, device=device)
         )
         hidden_states = self.attention(
             query=hidden_states,
             key=hidden_states,
             value=hidden_states,
             need_weights=False,
+            attn_mask=torch.nn.Transformer.generate_square_subsequent_mask(
+                max_sequence_len,
+                device=device,
+            ),
             is_causal=True,
         )[0]
         hidden_states = self.feedforward(hidden_states)
