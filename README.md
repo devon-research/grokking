@@ -33,19 +33,19 @@ wandb offline
 
 To generate the data and train a model, do:
 ```
-python ./scripts/data.py
-python ./scripts/train.py
+python scripts/data.py
+python scripts/train.py
 ```
 
 Or, if you are on a GPU cluster, do:
 ```
-python ./scripts/data.py
-sbatch ./scripts/job.slurm
+python scripts/data.py
+sbatch scripts/job.slurm
 ```
 
 To run many experiments at once on a GPU cluster, do:
 ```
-python ./scripts/experiments.py
+python scripts/experiments.py
 ```
 
 One can then use `wandb sync` to sync results to W&B.
