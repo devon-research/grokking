@@ -1,4 +1,9 @@
-# Predicting emergent and anomolous behavior in grokking
+This repository can be used to reproduce some of the modular addition grokking results from papers like [Power et al. 2022](https://arxiv.org/abs/2201.02177), [Nanda et al. 2023](https://arxiv.org/abs/2301.05217), and [Gromov 2023](https://arxiv.org/abs/2301.02679).
+
+The code furthermore facilitates the systematic manipulation of the training data fed into the modular addition networks. This manipulation allows for investigating the effects (on the behavior and associated internals) of adding imperfections or inserting anomalous rules alongside the modular addition task. The insertion of such anomalous rules then allows one to assess the ability to mechanistically detect anomalous / backdoored behavior in a relatively well-understood setting.
+
+## Motivation
+This repository was originally motivated by the mechanistic interpretability work of [Nanda et al. 2023](https://arxiv.org/abs/2301.05217) and the potential challenge of extending a similar mechanistic analysis to detecting and understanding important but non-dominant circuits that exist alongside the more typical behavior of a network.
 
 ## Using the code
 
