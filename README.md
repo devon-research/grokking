@@ -7,28 +7,11 @@ This repository was originally motivated by the mechanistic interpretability wor
 
 ## Using the code
 
-To set things up on a laptop using an Anaconda distribution, the following should work on a Windows machine. Navigate to the desired directory and run the following in the Anaconda Prompt:
+To set things up using [Rye](https://github.com/astral-sh/rye), simply run the following:
 ```
-conda create --name grokking pytorch cpuonly -c pytorch
-conda activate grokking
-conda install pyyaml tqdm
-pip install accelerate wandb
-git clone git@github.com:devonwp/grokking.git
+git clone https://github.com/devon-research/grokking.git
 cd grokking
-pip install -e .
-```
-
-To set things up on a GPU cluster, use the following instead:
-```
-module load anaconda3/2023.3
-conda create --name grokking pytorch pytorch-cuda=11.8 -c pytorch -c nvidia
-conda activate grokking
-conda install pyyaml tqdm
-pip install accelerate wandb
-git clone git@github.com:devonwp/grokking.git
-cd grokking
-pip install -e .
-wandb offline
+rye sync
 ```
 
 To generate the data and train a model, do:
