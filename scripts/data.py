@@ -1,6 +1,6 @@
 import os
 import torch
-from src.utils import parse_config
+from grokking.utils import parse_config
 # import einops
 
 # Reads in the configuration from the YAML file and overrides it with command-line arguments.

@@ -3,8 +3,8 @@ import wandb
 import torch
 from accelerate import Accelerator  # easy GPUs
 from tqdm import tqdm
-from src.models import GromovMLP, NandaTransformer
-from src.utils import parse_config
+from grokking.models import GromovMLP, NandaTransformer
+from grokking.utils import parse_config
 
 
 # Train a model on the given dataset.
