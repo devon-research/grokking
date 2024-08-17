@@ -6,6 +6,7 @@ dependencies = [
     "torch>=2.4.0",
     "wandb>=0.17.5",
     "accelerate>=0.33.0",
+    "pydantic>=2.8.2",
 ]
 readme = "README.md"
 requires-python = ">= 3.8"

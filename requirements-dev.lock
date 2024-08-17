@@ -12,6 +12,8 @@
 -e file:.
 accelerate==0.33.0
     # via grokking
+annotated-types==0.7.0
+    # via pydantic
 certifi==2024.7.4
     # via requests
     # via sentry-sdk
@@ -60,6 +62,10 @@ protobuf==5.27.3
 psutil==6.0.0
     # via accelerate
     # via wandb
+pydantic==2.8.2
+    # via grokking
+pydantic-core==2.20.1
+    # via pydantic
 pytest==8.3.2
 pyyaml==6.0.1
     # via accelerate
@@ -91,6 +97,8 @@ tqdm==4.66.5
     # via huggingface-hub
 typing-extensions==4.12.2
     # via huggingface-hub
+    # via pydantic
+    # via pydantic-core
     # via torch
 urllib3==2.2.2
     # via requests

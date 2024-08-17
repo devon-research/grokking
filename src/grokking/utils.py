@@ -1,15 +1,6 @@
 import yaml
 import argparse
-
-
-def _str2bool(s):
-    s_l = s.lower()
-    if s_l in ["true", "1"]:
-        return True
-    elif s_l in ["false", "0"]:
-        return False
-    else:
-        raise ValueError(f"Invalid boolean value: {s}")
+from pydantic import TypeAdapter
 
 
 def parse_config(config_path="config.yaml", args=None):
@@ -19,9 +10,7 @@ def parse_config(config_path="config.yaml", args=None):
     # Override the configuration with command-line arguments.
     parser = argparse.ArgumentParser()
     for key in config.keys():
-        value_converter = type(config[key])
-        if value_converter == bool:
-            value_converter = _str2bool
-        parser.add_argument("--" + key, default=config[key], type=value_converter)
+        type_adapter_validator = TypeAdapter(type(config[key])).validate_strings
+        parser.add_argument("--" + key, default=config[key], type=type_adapter_validator)
     config = vars(parser.parse_args(args))
     return config
