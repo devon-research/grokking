@@ -12,7 +12,7 @@ def _str2bool(s):
         raise ValueError(f"Invalid boolean value: {s}")
 
 
-def parse_config(config_path="config.yaml"):
+def parse_config(config_path="config.yaml", args=None):
     # Read the configuration from the YAML file.
     with open(config_path) as f:
         config = yaml.safe_load(f)
@@ -23,5 +23,5 @@ def parse_config(config_path="config.yaml"):
         if value_converter == bool:
             value_converter = _str2bool
         parser.add_argument("--" + key, default=config[key], type=value_converter)
-    config = vars(parser.parse_args())
+    config = vars(parser.parse_args(args))
     return config
