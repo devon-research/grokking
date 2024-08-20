@@ -1,0 +1,2 @@
+train_fraction: [0.1, 0.2, 0.3, 0.4]
+random_seed: [23093, 9082, 1093]

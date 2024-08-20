@@ -10,3 +10,12 @@ def test_parse_config_boolean_parsing():
     assert not parse_config(args=["--save_checkpoints", "false"])["save_checkpoints"]
     assert not parse_config(args=["--save_checkpoints", "False"])["save_checkpoints"]
     assert not parse_config(args=["--save_checkpoints", "0"])["save_checkpoints"]
+
+
+def test_parse_config_with_lists():
+    # This aims to test whether parse_config successfully parses configs with
+    # list-valued entries.
+    assert parse_config("tests/config-with-lists.yaml") == {
+        "train_fraction": [0.1, 0.2, 0.3, 0.4],
+        "random_seed": [23093, 9082, 1093],
+    }
