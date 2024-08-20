@@ -6,15 +6,19 @@ from collections.abc import Iterable, Iterator
 from grokking.utils import parse_config
 
 
-def product_dict_list(**kwargs: Iterable) -> Iterator[dict]:
+def keyed_product(**kwargs: Iterable) -> Iterator[dict]:
     """
     Given an unpacked dictionary of lists (or other iterables), returns an iterator
     yielding dictionaries representing a single element or "combination" from the
     Cartesian product of the lists.
 
-    Note that this has the same functionality as the Julia package DrWarson's
+    The name is inspired by itertools.product, but is a "keyed" version of it in that
+    the arguments are keyword args and the outputs are dictionaries instead of tuples.
+
+    Note that this has the same functionality as (the Julia package) DrWatson's
     [dict_list](https://juliadynamics.github.io/DrWatson.jl/v1.15/run&list/#DrWatson.dict_list).
-    The only difference is that this function accepts an unpacked dictionary.
+    The only difference is that this function accepts an unpacked dictionary instead of
+    a dictionary and returns an iterator instead of a list.
 
     Args:
         **kwargs: An unpacked dictionary of lists (or other iterables).
@@ -36,7 +40,7 @@ def option_string(options: dict, sep=" ") -> str:
     return " ".join(f"--{key}{sep}{value}" for key, value in options.items())
 
 
-train_option_lists: dict[str, list] = {
+option_lists: dict[str, list] = {
     "train_fraction": [0.1, 0.2, 0.3, 0.4],
     "random_seed": [23093, 9082, 1093],
 }
@@ -44,10 +48,11 @@ train_option_lists: dict[str, list] = {
 # Read in the configuration from the YAML file and override it with command-line arguments.
 config = parse_config()
 
-# Fill in the missing options from the YAML file.
+# Populate the dictionary of option lists with options from the config that are not yet
+# present. Note that the option_lists dictionary overrides the config dictionary.
 for key in config:
-    if key not in train_option_lists:
-        train_option_lists[key] = [config[key]]
+    if key not in option_lists:
+        option_lists[key] = [config[key]]
 
 sbatch_options = {
     "job-name": "grokking",
@@ -67,8 +72,8 @@ data_directory = os.path.join(this_directory, "..", "data")
 
 print("Ensuring presence of data...")
 data_script_params = ["modular_base", "use_equals_symbol"]
-data_option_lists = {param: train_option_lists[param] for param in data_script_params}
-for python_options in product_dict_list(**data_option_lists):
+data_option_lists = {param: option_lists[param] for param in data_script_params}
+for python_options in keyed_product(**data_option_lists):
     file_name = f'{"-".join(str(x) for x in python_options.values())}-dataset.pt'
     if not os.path.isfile(os.path.join(data_directory, file_name)):
         print(f"Generating {file_name}...")
@@ -77,7 +82,7 @@ for python_options in product_dict_list(**data_option_lists):
 print("Done ensuring presence of data.")
 
 print("Submitting training jobs...")
-for python_options in product_dict_list(**train_option_lists):
+for python_options in keyed_product(**option_lists):
     sbatch_option_string = option_string(sbatch_options, sep="=")
     python_option_string = option_string(python_options, sep=" ")
     run_command(
