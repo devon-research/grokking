@@ -3,7 +3,7 @@ import torch
 from grokking.utils import parse_config
 # import einops
 
-# Reads in the configuration from the YAML file and overrides it with command-line arguments.
+# Read in the configuration from the YAML file and override it with command-line arguments.
 config = parse_config()
 
 P = config["modular_base"]
