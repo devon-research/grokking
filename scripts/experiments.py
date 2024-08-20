@@ -2,7 +2,7 @@ import itertools
 import subprocess
 import shlex
 import os
-import yaml
+from grokking.utils import parse_config
 
 
 # This has the same functionality as DrWatson's dict_list in Julia.
@@ -25,9 +25,8 @@ train_option_lists = {
     "random_seed": [23093, 9082, 1093],
 }
 
-# Read the configuration from the YAML file.
-with open("config.yaml") as f:
-    config = yaml.safe_load(f)
+# Read in the configuration from the YAML file and override it with command-line arguments.
+config = parse_config()
 
 # Fill in the missing options from the YAML file.
 for key in config:
