@@ -66,7 +66,9 @@ class NandaTransformer(nn.Module):
             num_embeddings=vocab_size, embedding_dim=embed_dim
         )
 
-    def forward(self, input_ids: torch.LongTensor) -> torch.FloatTensor:
+    # This should return FloatTensor but mypy gives an error, possibly because of some
+    # weirdness in PyTorch. [?]
+    def forward(self, input_ids: torch.LongTensor) -> torch.Tensor:
         """Computes the forward pass of the network.
 
         Args:

@@ -2,7 +2,9 @@ import yaml
 import argparse
 
 
-def parse_config(config_path: str = "config.yaml", args: list[str] = None) -> dict:
+def parse_config(
+    config_path: str = "config.yaml", args: list[str] | None = None
+) -> dict:
     """Parses the given YAML configuration file, and then overwrites entries in the
     configuration with command-line arguments.
 

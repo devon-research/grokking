@@ -43,6 +43,9 @@ markupsafe==2.1.5
     # via jinja2
 mpmath==1.3.0
     # via sympy
+mypy==1.11.1
+mypy-extensions==1.0.0
+    # via mypy
 networkx==3.3
     # via torch
 numpy==1.26.4
@@ -89,8 +92,11 @@ torch==2.4.0
     # via grokking
 tqdm==4.66.5
     # via huggingface-hub
+types-pyyaml==6.0.12.20240808
+types-tqdm==4.66.0.20240417
 typing-extensions==4.12.2
     # via huggingface-hub
+    # via mypy
     # via torch
 urllib3==2.2.2
     # via requests

@@ -81,6 +81,7 @@ ds_train, ds_valid = torch.utils.data.random_split(
 )
 
 # Process the strings in the configuration.
+model: torch.nn.Module
 if config["model"] == "GromovMLP":
     model = GromovMLP(config["modular_base"], config["mlp_hidden_dim"])
     if config["use_equals_symbol"]:
@@ -138,6 +139,7 @@ config["actual_poisoned_fraction"] = sum(
 ) / len(train_outputs)
 outputs[ds_train.indices] = train_outputs
 
+optimizer: torch.optim.Optimizer
 if config["optimizer"] == "Adam":
     optimizer = torch.optim.Adam(model.parameters(), lr=config["learning_rate"])
 elif config["optimizer"] == "SGD":
@@ -181,13 +183,13 @@ if config["batch_size"] == -1:
 if config["full_batch"]:
     config["batch_size"] = len(ds_train)
 
-wandb.init(project="grokking", config=config, tags=["1.3"])
+run = wandb.init(project="grokking", config=config, tags=["1.3"])
 
-ds_train_path = os.path.join(wandb.run.dir, "training_data.pt")
+ds_train_path = os.path.join(run.dir, "training_data.pt")
 torch.save(ds_train, ds_train_path)
 wandb.save(ds_train_path)
 
-ds_test_path = os.path.join(wandb.run.dir, "test_data.pt")
+ds_test_path = os.path.join(run.dir, "test_data.pt")
 torch.save(ds_valid, ds_test_path)
 wandb.save(ds_test_path)
 
