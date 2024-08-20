@@ -1,6 +1,7 @@
 import os
 import wandb
 import torch
+from typing import Callable
 from accelerate import Accelerator  # easy GPUs
 from tqdm import tqdm
 from grokking.models import GromovMLP, NandaTransformer
@@ -9,17 +10,18 @@ from grokking.utils import parse_config
 
 # Train a model on the given dataset.
 def train(
-    model,
-    ds_train,
-    ds_valid,
-    optimizer,
-    loss_fn,
-    batch_size,
-    n_epochs,
-    validate_every,
-    save_checkpoints,
-    logit_dtype,
-):
+    model: torch.nn.Module,
+    ds_train: torch.utils.data.Dataset,
+    ds_valid: torch.utils.data.Dataset,
+    optimizer: torch.optim.Optimizer,
+    loss_fn: Callable[[torch.Tensor, torch.Tensor], torch.Tensor],
+    batch_size: int,
+    n_epochs: int,
+    validate_every: int,
+    save_checkpoints: bool,
+    logit_dtype: torch.dtype,
+    logging_dir: str,
+) -> None:
     dl_train = torch.utils.data.DataLoader(ds_train, batch_size)
     dl_valid = torch.utils.data.DataLoader(ds_valid, batch_size, shuffle=False)
     acc = Accelerator()
@@ -40,8 +42,8 @@ def train(
             with torch.inference_mode():
                 for split in ["train", "valid"]:
                     dataloader = dl_train if split == "train" else dl_valid
-                    loss = 0.0
-                    accuracy = 0.0
+                    loss = torch.zeros(1, device=acc.device)
+                    accuracy = torch.zeros(1, device=acc.device)
                     for xb, yb in dataloader:
                         pred = model(xb)
                         loss += loss_fn(pred.to(logit_dtype), yb)
@@ -57,7 +59,7 @@ def train(
                     )
             if save_checkpoints:
                 checkpoint_name = f"checkpoint-{epoch}.pt"
-                checkpoint_path = os.path.join(wandb.run.dir, checkpoint_name)
+                checkpoint_path = os.path.join(logging_dir, checkpoint_name)
                 torch.save(model.state_dict(), checkpoint_path)
                 wandb.save(checkpoint_path)
             model.train()
@@ -205,6 +207,7 @@ train(
     validate_every=config["validate_every"],
     save_checkpoints=config["save_checkpoints"],
     logit_dtype=logit_dtype,
+    logging_dir=run.dir,
 )
 
 wandb.finish()

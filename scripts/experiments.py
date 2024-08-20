@@ -2,21 +2,22 @@ import itertools
 import subprocess
 import shlex
 import os
+from collections.abc import Iterator
 from grokking.utils import parse_config
 
 
 # This has the same functionality as DrWatson's dict_list in Julia.
-def product_dict_list(**kwargs):
+def product_dict_list(**kwargs) -> Iterator[dict]:
     keys = kwargs.keys()
     for combination in itertools.product(*kwargs.values()):
         yield dict(zip(keys, combination))
 
 
-def run_command(command_string):
+def run_command(command_string: str) -> None:
     subprocess.run(shlex.split(command_string), check=True)
 
 
-def option_string(options, sep=" "):
+def option_string(options: dict, sep=" ") -> str:
     return " ".join(f"--{key}{sep}{value}" for key, value in options.items())
 
 
