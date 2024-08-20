@@ -6,8 +6,23 @@ from collections.abc import Iterable, Iterator
 from grokking.utils import parse_config
 
 
-# This has the same functionality as DrWatson's dict_list in Julia.
 def product_dict_list(**kwargs: Iterable) -> Iterator[dict]:
+    """
+    Given an unpacked dictionary of lists (or other iterables), returns an iterator
+    yielding dictionaries representing a single element or "combination" from the
+    Cartesian product of the lists.
+
+    Note that this has the same functionality as the Julia package DrWarson's
+    [dict_list](https://juliadynamics.github.io/DrWatson.jl/v1.15/run&list/#DrWatson.dict_list).
+    The only difference is that this function accepts an unpacked dictionary.
+
+    Args:
+        **kwargs: An unpacked dictionary of lists (or other iterables).
+
+    Returns:
+        An iterator yielding dictionaries each with the same keys as the input and with
+        values corresponding to one element of the Cartesian product of the input lists.
+    """
     keys = kwargs.keys()
     for combination in itertools.product(*kwargs.values()):
         yield dict(zip(keys, combination))
