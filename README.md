@@ -14,6 +14,8 @@ cd grokking
 rye sync
 ```
 
+Furthermore, specify a configuration. By default, the given `config.yaml` will be used.
+
 To generate the data and train a model, do:
 ```
 python scripts/data.py
@@ -26,9 +28,10 @@ python scripts/data.py
 sbatch scripts/job.slurm
 ```
 
-To run many experiments at once on a GPU cluster, do:
+To run many experiments at once on a GPU cluster, first specify a configuration with one or more list-valued entries. Then run:
 ```
 python scripts/experiments.py
 ```
+(This will run one experiment for every entry in the Cartesian product of all lists in the configuration.)
 
 One can then use `wandb sync` to sync results to W&B.
