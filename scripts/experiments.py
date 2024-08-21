@@ -40,19 +40,14 @@ def option_string(options: dict, sep=" ") -> str:
     return " ".join(f"--{key}{sep}{value}" for key, value in options.items())
 
 
-option_lists: dict[str, list] = {
-    "train_fraction": [0.1, 0.2, 0.3, 0.4],
-    "random_seed": [23093, 9082, 1093],
-}
-
 # Read in the configuration from the YAML file and override it with command-line arguments.
 config = parse_config()
 
-# Populate the dictionary of option lists with options from the config that are not yet
-# present. Note that the option_lists dictionary overrides the config dictionary.
-for key in config:
-    if key not in option_lists:
-        option_lists[key] = [config[key]]
+# Convert single values to lists.
+option_lists = {
+    key: value if isinstance(value, Iterable) else [value]
+    for key, value in config.items()
+}
 
 sbatch_options = {
     "job-name": "grokking",
