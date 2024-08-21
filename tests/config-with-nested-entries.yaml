@@ -1,0 +1,8 @@
+sbatch_options:
+  job-name: grokking
+  nodes: 1
+  ntasks: 1
+  cpus-per-task: 1
+  mem: 3G
+  gres: gpu:1
+  time: 00:60:01

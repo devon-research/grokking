@@ -19,3 +19,19 @@ def test_parse_config_with_lists():
         "train_fraction": [0.1, 0.2, 0.3, 0.4],
         "random_seed": [23093, 9082, 1093],
     }
+
+
+def test_parse_config_with_nested_entries():
+    # This aims to test whether parse_config successfully parses configs with
+    # nested entries.
+    assert parse_config("tests/config-with-nested-entries.yaml") == {
+        "sbatch_options": {
+            "job-name": "grokking",
+            "nodes": 1,
+            "ntasks": 1,
+            "cpus-per-task": 1,
+            "mem": "3G",
+            "gres": "gpu:1",
+            "time": "00:60:01",
+        },
+    }
