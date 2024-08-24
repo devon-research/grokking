@@ -21,6 +21,8 @@ click==8.1.7
     # via wandb
 docker-pycreds==0.4.0
     # via wandb
+einops==0.8.0
+    # via grokking
 filelock==3.15.4
     # via huggingface-hub
     # via torch

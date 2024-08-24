@@ -1,4 +1,5 @@
 import torch
+import einops
 
 
 def generate_modular_addition_dataset(
@@ -20,10 +21,11 @@ def generate_modular_addition_dataset(
         A TensorDataset containing inputs of dimension (P^2, 3) [if use_equals_symbol]
         or (P^2, 2) [if not use_equals_symbol] and outputs of dimension (P^2).
     """
-    input_x = torch.arange(modular_base).repeat_interleave(modular_base)
-    input_y = input_x.view(modular_base, modular_base).transpose(0, 1).flatten()
-    inputs = torch.stack([input_x, input_y], dim=-1)
-    outputs = inputs.sum(dim=1) % modular_base
+    input_x = einops.repeat(torch.arange(modular_base), "a -> (a b)", b=modular_base)
+    input_y = einops.repeat(torch.arange(modular_base), "b -> (a b)", a=modular_base)
+    # Let L be the number of examples in the dataset, and let K=2 be the number of operands.
+    inputs = einops.rearrange([input_x, input_y], "K L -> L K")  # type: ignore
+    outputs = einops.reduce(inputs, "L K -> L", reduction="sum") % modular_base
     if use_equals_symbol:
         # Add a third token to represent the equals symbol to every input.
         # The equals symbol uses an input ID equal to the modular base.
